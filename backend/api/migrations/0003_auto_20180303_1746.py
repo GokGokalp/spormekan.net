@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
     atomic = False
     dependencies = [
-        ('api', '0002_auto_20180303_1441'),
+        ('backend', '0002_auto_20180303_1441'),
     ]
 
     operations = [

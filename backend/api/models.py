@@ -41,6 +41,8 @@ class Firm(models.Model):
     last_modify_date = models.DateTimeField(default=datetime.now, blank=True)
     is_deleted = models.BooleanField(default=False)
 
+    objects = models.Manager()
+
 
 class Member(models.Model):
     class Meta:
@@ -58,7 +60,7 @@ class Member(models.Model):
     )
 
     gender = models.CharField(max_length=1, choices=GENDER, default='0')
-    e_mail = models.EmailField()
+    email = models.EmailField()
     phone_number = models.TextField(max_length=20)
     city = models.TextField(max_length=50)
     address = models.TextField()
@@ -118,7 +120,7 @@ class NotificationHistories(models.Model):
 
     notification_type = models.CharField(max_length=1, choices=NOTIFICATION_TYPE, default='0')
     is_sms_sent = models.BooleanField(default=False)
-    is_e_mail_sent = models.BooleanField(default=False)
+    is_email_sent = models.BooleanField(default=False)
     notification_date = models.DateTimeField(default=datetime.now, blank=False)
     created_date = models.DateTimeField(default=datetime.now, blank=False)
     last_modify_date = models.DateTimeField(default=datetime.now, blank=True)

@@ -46,6 +46,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='firm',
             name='firm_option',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='api.FirmOption'),
+            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='backend.FirmOption'),
         ),
     ]
