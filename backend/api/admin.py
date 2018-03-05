@@ -1,5 +1,5 @@
 from django.contrib import admin
-from backend.api.models import FirmOption, Firm, Member, Membership, BodyMeasurement, NotificationHistories
+from api.models import FirmOption, Firm, Member, Membership, BodyMeasurement, NotificationHistories
 
 
 # Register your models here.
@@ -9,5 +9,4 @@ admin.site.register(Firm)
 admin.site.register(Member)
 admin.site.register(Membership)
 admin.site.register(BodyMeasurement)
-admin.site.register(Firm)
 admin.site.register(NotificationHistories)

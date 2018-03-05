@@ -1,4 +1,4 @@
-from backend.api.models import Firm
+from api.models import Firm
 from rest_framework import serializers
 
 
