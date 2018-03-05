@@ -9,7 +9,7 @@ class FirmOption(models.Model):
         db_table = 'FirmOptions'
 
     remaining_membership_reminder_day = models.IntegerField(null=True)
-    theme = models.TextField()
+    theme = models.TextField(null=True, blank=True)
     sms_credit = models.IntegerField(default=0)
     is_remaining_membership_email_reminder_active = models.BooleanField(default=False)
     is_remaining_membership_sms_reminder_active = models.BooleanField(default=False)
@@ -27,14 +27,14 @@ class Firm(models.Model):
     name = models.TextField(max_length=100)
     email = models.EmailField()
     password = models.TextField(max_length=20)
-    phone_number = models.TextField(max_length=20)
-    city = models.TextField(max_length=50)
-    address = models.TextField()
-    logo = models.TextField()
+    phone_number = models.TextField(max_length=20, blank=True, null=True)
+    city = models.TextField(max_length=50, blank=True, null=True)
+    address = models.TextField(blank=True, null=True)
+    logo = models.TextField(blank=True, null=True)
 
     FIRM_TYPE_CHOICES = (
-        ('FITNESS_CENTER', '0'),
-        ('PERSONAL_TRAINER', '1'),
+        ('FITNESS_CENTER', 0),
+        ('PERSONAL_TRAINER', 1),
     )
 
     firm_type = models.CharField(max_length=1, choices=FIRM_TYPE_CHOICES, default=0)
@@ -57,15 +57,15 @@ class Member(models.Model):
     birth_date = models.DateTimeField(blank=True)
 
     GENDER = (
-        ('MALE', '0'),
-        ('FEMALE', '1')
+        ('MALE', 0),
+        ('FEMALE', 1)
     )
 
-    gender = models.CharField(max_length=1, choices=GENDER, default='0')
+    gender = models.CharField(max_length=1, choices=GENDER, default=0)
     email = models.EmailField()
-    phone_number = models.TextField(max_length=20)
+    phone_number = models.TextField(max_length=20, blank=True)
     city = models.TextField(max_length=50)
-    address = models.TextField()
+    address = models.TextField(blank=True)
     created_date = models.DateTimeField(default=datetime.now, blank=False)
     last_modify_date = models.DateTimeField(default=datetime.now, blank=True)
     is_deleted = models.BooleanField(default=False)
@@ -97,18 +97,18 @@ class BodyMeasurement(models.Model):
     id = models.AutoField(primary_key=True)
     firm_id = models.IntegerField(null=False)
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
-    measurement_date = models.DateTimeField(default=datetime.now, blank=False)
-    kg = models.FloatField()
-    body_fat_percentage = models.FloatField()
-    body_water_percentage = models.FloatField()
-    body_muscle_percentage = models.FloatField()
-    right_bicep_size_in_cm = models.FloatField()
-    left_bicep_size_in_cm = models.FloatField()
-    chest_size_in_cm = models.FloatField()
-    buttock_size_in_cm = models.FloatField()
-    waist_size_in_cm = models.FloatField()
-    created_date = models.DateTimeField(default=datetime.now, blank=False)
-    last_modify_date = models.DateTimeField(default=datetime.now, blank=True)
+    measurement_date = models.DateTimeField(default=datetime.now)
+    kg = models.FloatField(blank=True)
+    body_fat_percentage = models.FloatField(blank=True)
+    body_water_percentage = models.FloatField(blank=True)
+    body_muscle_percentage = models.FloatField(blank=True)
+    right_bicep_size_in_cm = models.FloatField(blank=True)
+    left_bicep_size_in_cm = models.FloatField(blank=True)
+    chest_size_in_cm = models.FloatField(blank=True)
+    buttock_size_in_cm = models.FloatField(blank=True)
+    waist_size_in_cm = models.FloatField(blank=True)
+    created_date = models.DateTimeField(default=datetime.now)
+    last_modify_date = models.DateTimeField(default=datetime.now)
     is_deleted = models.BooleanField(default=False)
 
     objects = models.Manager()
@@ -127,7 +127,7 @@ class NotificationHistories(models.Model):
         ('CAMPAIGN', 1)
     )
 
-    notification_type = models.CharField(max_length=1, choices=NOTIFICATION_TYPE, default='0')
+    notification_type = models.CharField(max_length=1, choices=NOTIFICATION_TYPE, default=0)
     is_sms_sent = models.BooleanField(default=False)
     is_email_sent = models.BooleanField(default=False)
     notification_date = models.DateTimeField(default=datetime.now, blank=False)
