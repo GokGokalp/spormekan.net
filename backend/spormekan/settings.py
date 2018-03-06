@@ -103,6 +103,13 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+# Swagger settings
+
+SWAGGER_SETTINGS = {
+    'DOC_EXPANSION': 'list'
+}
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
