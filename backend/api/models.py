@@ -1,4 +1,5 @@
 from django.db import models
+from api.managers import FirmOptionManager
 from datetime import datetime
 
 # Create your models here.
@@ -13,8 +14,7 @@ class FirmOption(models.Model):
     sms_credit = models.IntegerField(default=0)
     is_remaining_membership_email_reminder_active = models.BooleanField(default=False)
     is_remaining_membership_sms_reminder_active = models.BooleanField(default=False)
-
-    objects = models.Manager()
+    objects = FirmOptionManager()
 
 
 class Firm(models.Model):
@@ -43,8 +43,6 @@ class Firm(models.Model):
     last_modify_date = models.DateTimeField(default=datetime.now, blank=True)
     is_deleted = models.BooleanField(default=False)
 
-    objects = models.Manager()
-
 
 class Member(models.Model):
     class Meta:
@@ -70,8 +68,6 @@ class Member(models.Model):
     last_modify_date = models.DateTimeField(default=datetime.now, blank=True)
     is_deleted = models.BooleanField(default=False)
 
-    objects = models.Manager()
-
 
 class Membership(models.Model):
     class Meta:
@@ -86,8 +82,6 @@ class Membership(models.Model):
     is_paid = models.BooleanField(default=False)
     amount = models.FloatField(default=0)
     currency_code = models.CharField(max_length=3)
-
-    objects = models.Manager()
 
 
 class BodyMeasurement(models.Model):
@@ -111,8 +105,6 @@ class BodyMeasurement(models.Model):
     last_modify_date = models.DateTimeField(default=datetime.now)
     is_deleted = models.BooleanField(default=False)
 
-    objects = models.Manager()
-
 
 class NotificationHistories(models.Model):
     class Meta:
@@ -134,5 +126,3 @@ class NotificationHistories(models.Model):
     created_date = models.DateTimeField(default=datetime.now, blank=False)
     last_modify_date = models.DateTimeField(default=datetime.now, blank=True)
     is_deleted = models.BooleanField(default=False)
-
-    objects = models.Manager()
