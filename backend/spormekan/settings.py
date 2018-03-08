@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
+from django.conf import settings
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -24,6 +25,7 @@ SECRET_KEY = 'uq_6a^)tib3_m0tw%=%h9xv@)0k(er(31^*o0-8b2v3mwwy71)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+settings.configure(DEBUG=True)
 
 ALLOWED_HOSTS = []
 

@@ -23,7 +23,6 @@ from api import views
 schema_view = get_swagger_view(title='Spormekan.net API')
 router = routers.DefaultRouter()
 router.register(r'firms', views.FirmViewSet)
-router.register(r'firm-preferences', views.FirmPreferenceViewSet)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),

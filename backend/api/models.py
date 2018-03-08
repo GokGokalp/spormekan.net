@@ -1,6 +1,8 @@
 from django.db import models
 from api.managers import FirmOptionManager
 from datetime import datetime
+from django.utils.timezone import utc
+
 
 # Create your models here.
 
@@ -9,17 +11,19 @@ class FirmOption(models.Model):
     class Meta:
         db_table = 'FirmOptions'
 
+    # Attributes
+    id = models.AutoField(primary_key=True)
     remaining_membership_reminder_day = models.IntegerField(null=True)
     theme = models.TextField(null=True, blank=True)
     sms_credit = models.IntegerField(default=0)
     is_remaining_membership_email_reminder_active = models.BooleanField(default=False)
     is_remaining_membership_sms_reminder_active = models.BooleanField(default=False)
+
+    # Manager
     objects = FirmOptionManager()
 
 
 class Firm(models.Model):
-    class Meta:
-        db_table = 'Firms'
 
     id = models.AutoField(primary_key=True)
     contact_first_name = models.TextField()
@@ -42,6 +46,30 @@ class Firm(models.Model):
     created_date = models.DateTimeField(default=datetime.now, blank=False)
     last_modify_date = models.DateTimeField(default=datetime.now, blank=True)
     is_deleted = models.BooleanField(default=False)
+
+    # Functions
+    def save(self, *args, **kwargs):
+        firm_option = FirmOption()
+        firm_option.remaining_membership_reminder_day = 5
+        firm_option.theme = 'Black'
+        firm_option.sms_credit = 0
+        firm_option.is_remaining_membership_email_reminder_active = False
+        firm_option.is_remaining_membership_sms_reminder_active = False
+
+        firm_option.save()
+
+        print(firm_option)
+        print(firm_option.theme)
+
+        self.firm_option = firm_option
+        self.created_date = datetime.utcnow().replace(tzinfo=utc)
+
+        super(Firm, self).save(*args, **kwargs)
+
+    # Meta
+    class Meta:
+        db_table = 'Firms'
+        ordering = ['-id']
 
 
 class Member(models.Model):

@@ -1,5 +1,4 @@
 from django.db import models
-from api.models import Firm
 
 
 class FirmOptionManager(models.Manager):
@@ -12,6 +11,10 @@ class FirmOptionManager(models.Manager):
             sms_credit=sms_credit,
             is_remaining_membership_email_reminder_active=is_remaining_membership_email_reminder_active,
             is_remaining_membership_sms_reminder_active=is_remaining_membership_sms_reminder_active)
+
+    def get(self, pk):
+        firm_option = super(FirmOptionManager, self).filter(Id=pk)
+        return firm_option
 
 
 class FirmManager(models.Manager):
