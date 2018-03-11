@@ -13,8 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.conf.urls import url, include
-from django.contrib import admin
+from django.conf.urls import url
 from rest_framework import routers
 from rest_framework_swagger.views import get_swagger_view
 from api import views
@@ -22,11 +21,8 @@ from api import views
 
 schema_view = get_swagger_view(title='Spormekan.net API')
 router = routers.DefaultRouter()
-router.register(r'firms', views.FirmViewSet)
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'^backend-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^$', schema_view),
-    url(r'^', include(router.urls))
+    url(r'^firms/$', views.FirmList.as_view())
 ]

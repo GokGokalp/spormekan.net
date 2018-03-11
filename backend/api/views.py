@@ -1,19 +1,30 @@
-from rest_framework import viewsets
-from rest_framework.decorators import detail_route
+from rest_framework.views import APIView
 from rest_framework.response import Response
-from api.models import Firm
+import logging
 from api.serializers import FirmSerializer
-from api.managers import FirmOptionManager
+from api.models import Firm
+from rest_framework import status
 
 
-# Create your views here.
-class FirmViewSet(viewsets.ModelViewSet):
+class FirmList(APIView):
+    logger = logging.getLogger(__name__)
 
-    queryset = Firm.objects.all()
-    serializer_class = FirmSerializer
+    def get(self, request, format=None):
+        try:
+            firms = Firm.objects.all()
+            serializer = FirmSerializer(firms, many=True)
+            return Response(serializer.data)
+        except Exception as exp:
+            logging.exception(exp)
+            return Response('An error occurred during process', status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    @detail_route(methods=['get'])
-    def preference(self, request):
-        print(request)
-        firm_option = FirmOptionManager().get(1)
-        return Response(firm_option)
+    def post(self, request, format=None):
+        try:
+            serializer = FirmSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+        except Exception as exp:
+            logging.exception(exp)
+            return Response('An error occurred during process', status=status.HTTP_500_INTERNAL_SERVER_ERROR)

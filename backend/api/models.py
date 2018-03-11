@@ -1,15 +1,8 @@
 from django.db import models
-from api.managers import FirmOptionManager
 from datetime import datetime
-from django.utils.timezone import utc
-
-
-# Create your models here.
 
 
 class FirmOption(models.Model):
-    class Meta:
-        db_table = 'FirmOptions'
 
     # Attributes
     id = models.AutoField(primary_key=True)
@@ -19,12 +12,14 @@ class FirmOption(models.Model):
     is_remaining_membership_email_reminder_active = models.BooleanField(default=False)
     is_remaining_membership_sms_reminder_active = models.BooleanField(default=False)
 
-    # Manager
-    objects = FirmOptionManager()
+    # Meta
+    class Meta:
+        db_table = 'FirmOptions'
 
 
 class Firm(models.Model):
 
+    # Attributes
     id = models.AutoField(primary_key=True)
     contact_first_name = models.TextField()
     contact_last_name = models.TextField()
@@ -36,35 +31,20 @@ class Firm(models.Model):
     address = models.TextField(blank=True, null=True)
     logo = models.TextField(blank=True, null=True)
 
+    FITNESS_CENTER, PERSONAL_TRAINER = range(2)
     FIRM_TYPE_CHOICES = (
-        ('FITNESS_CENTER', 0),
-        ('PERSONAL_TRAINER', 1),
+        (FITNESS_CENTER, 'Fitness Center'),
+        (PERSONAL_TRAINER, 'Personal Trainer'),
     )
 
-    firm_type = models.CharField(max_length=1, choices=FIRM_TYPE_CHOICES, default=0)
+    firm_type = models.CharField(max_length=1, choices=FIRM_TYPE_CHOICES, default=FITNESS_CENTER)
     firm_option = models.OneToOneField(FirmOption, on_delete=models.CASCADE)
     created_date = models.DateTimeField(default=datetime.now, blank=False)
     last_modify_date = models.DateTimeField(default=datetime.now, blank=True)
     is_deleted = models.BooleanField(default=False)
 
-    # Functions
-    def save(self, *args, **kwargs):
-        firm_option = FirmOption()
-        firm_option.remaining_membership_reminder_day = 5
-        firm_option.theme = 'Black'
-        firm_option.sms_credit = 0
-        firm_option.is_remaining_membership_email_reminder_active = False
-        firm_option.is_remaining_membership_sms_reminder_active = False
-
-        firm_option.save()
-
-        print(firm_option)
-        print(firm_option.theme)
-
-        self.firm_option = firm_option
-        self.created_date = datetime.utcnow().replace(tzinfo=utc)
-
-        super(Firm, self).save(*args, **kwargs)
+    # Managers
+    objects = models.Manager()
 
     # Meta
     class Meta:
@@ -73,21 +53,20 @@ class Firm(models.Model):
 
 
 class Member(models.Model):
-    class Meta:
-        db_table = 'Members'
-
+    # Attributes
     id = models.AutoField(primary_key=True)
     firm_id = models.IntegerField(null=False)
     first_name = models.TextField(max_length=20)
     last_name = models.TextField(max_length=30)
     birth_date = models.DateTimeField(blank=True)
-
+    UNKNOWN, MALE, FEMALE = range(3)
     GENDER = (
-        ('MALE', 0),
-        ('FEMALE', 1)
+        (UNKNOWN, 0),
+        (MALE, 1),
+        (FEMALE, 2)
     )
 
-    gender = models.CharField(max_length=1, choices=GENDER, default=0)
+    gender = models.CharField(max_length=1, choices=GENDER, default=UNKNOWN)
     email = models.EmailField()
     phone_number = models.TextField(max_length=20, blank=True)
     city = models.TextField(max_length=50)
@@ -96,11 +75,14 @@ class Member(models.Model):
     last_modify_date = models.DateTimeField(default=datetime.now, blank=True)
     is_deleted = models.BooleanField(default=False)
 
+    # Meta
+    class Meta:
+        db_table = 'Members'
+        ordering = ['-id']
+
 
 class Membership(models.Model):
-    class Meta:
-        db_table = 'Memberships'
-
+    # Attributes
     id = models.AutoField(primary_key=True)
     firm_id = models.IntegerField(null=False)
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
@@ -111,11 +93,14 @@ class Membership(models.Model):
     amount = models.FloatField(default=0)
     currency_code = models.CharField(max_length=3)
 
+    # Meta
+    class Meta:
+        db_table = 'Memberships'
+        ordering = ['-id']
+
 
 class BodyMeasurement(models.Model):
-    class Meta:
-        db_table = 'BodyMeasurements'
-
+    # Attributes
     id = models.AutoField(primary_key=True)
     firm_id = models.IntegerField(null=False)
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
@@ -133,24 +118,32 @@ class BodyMeasurement(models.Model):
     last_modify_date = models.DateTimeField(default=datetime.now)
     is_deleted = models.BooleanField(default=False)
 
+    # Meta
+    class Meta:
+        db_table = 'BodyMeasurements'
+        ordering = ['-id']
+
 
 class NotificationHistories(models.Model):
-    class Meta:
-        db_table = 'NotificationHistories'
-
+    # Attributes
     id = models.AutoField(primary_key=True)
     firm_id = models.IntegerField(null=False)
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
 
+    REMAINING_MEMBERSHIP_REMINDER, CAMPAIGN = range(2)
     NOTIFICATION_TYPE = (
-        ('REMAINING_MEMBERSHIP_REMINDER', 0),
-        ('CAMPAIGN', 1)
+        (REMAINING_MEMBERSHIP_REMINDER, 'Remaining Membership Reminder'),
+        (CAMPAIGN, 'Campaign')
     )
 
-    notification_type = models.CharField(max_length=1, choices=NOTIFICATION_TYPE, default=0)
+    notification_type = models.CharField(max_length=1, choices=NOTIFICATION_TYPE, default=REMAINING_MEMBERSHIP_REMINDER)
     is_sms_sent = models.BooleanField(default=False)
     is_email_sent = models.BooleanField(default=False)
     notification_date = models.DateTimeField(default=datetime.now, blank=False)
     created_date = models.DateTimeField(default=datetime.now, blank=False)
     last_modify_date = models.DateTimeField(default=datetime.now, blank=True)
     is_deleted = models.BooleanField(default=False)
+
+    # Meta
+    class Meta:
+        db_table = 'NotificationHistories'
