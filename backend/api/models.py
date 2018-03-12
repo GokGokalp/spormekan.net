@@ -12,6 +12,9 @@ class FirmOption(models.Model):
     is_remaining_membership_email_reminder_active = models.BooleanField(default=False)
     is_remaining_membership_sms_reminder_active = models.BooleanField(default=False)
 
+    # Managers
+    objects = models.Manager()
+
     # Meta
     class Meta:
         db_table = 'FirmOptions'

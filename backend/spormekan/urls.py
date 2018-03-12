@@ -13,7 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+from django.conf.urls import url, include
 from rest_framework import routers
 from rest_framework_swagger.views import get_swagger_view
 from api import views
@@ -21,8 +21,9 @@ from api import views
 
 schema_view = get_swagger_view(title='Spormekan.net API')
 router = routers.DefaultRouter()
+router.register(r'firms', views.FirmViewSet)
 
 urlpatterns = [
     url(r'^$', schema_view),
-    url(r'^firms/$', views.FirmList.as_view())
+    url(r'^', include(router.urls))
 ]

@@ -4,6 +4,12 @@ from datetime import datetime
 from django.core.exceptions import ValidationError
 
 
+class FirmOptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FirmOption
+        fields = '__all__'
+
+
 class FirmSerializer(serializers.ModelSerializer):
     MIN_LENGTH_OF_PASSWORD = 5
     REMAINING_MEMBERSHIP_REMINDER_DAY = 5
@@ -13,6 +19,12 @@ class FirmSerializer(serializers.ModelSerializer):
     class Meta:
         model = Firm
         fields = (
+            'contact_first_name',
+            'contact_last_name',
+            'name',
+            'email',
+            'password',
+            'firm_type',
             'phone_number',
             'city',
             'address',
@@ -30,7 +42,8 @@ class FirmSerializer(serializers.ModelSerializer):
             'password',
             'firm_type'
         )
-        extra_kwargs = {field: {'required': True} for field in required_fields}
+
+        extra_kwargs = {fields: {'allow_null': False, 'required': True} for fields in required_fields}
 
     def validate(self, value):
         user = Firm.objects.get(email=value['email'])
