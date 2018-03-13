@@ -45,15 +45,16 @@ class FirmSerializer(serializers.ModelSerializer):
 
         extra_kwargs = {fields: {'allow_null': False, 'required': True} for fields in required_fields}
 
-    def validate(self, value):
-        user = Firm.objects.get(email=value['email'])
-        if user is not None:
+    def validate(self, data):
+        firm = Firm.objects.filter(email=data['email'])
+
+        if firm.count() > 0:
             raise ValidationError('The email already exist in the database.')
 
-        if len(value) < self.MIN_LENGTH_OF_PASSWORD:
-            raise ValidationError('Password too short')
+        if len(data['password']) < self.MIN_LENGTH_OF_PASSWORD:
+            raise ValidationError('Password too short.')
 
-        return super(FirmSerializer, self).validate(value)
+        return data
 
     def create(self, validated_data):
         firm_option = FirmOption.objects.create(

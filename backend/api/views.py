@@ -1,9 +1,16 @@
 from rest_framework.response import Response
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.decorators import detail_route
 from api.serializers import FirmSerializer, FirmOptionSerializer
 from api.models import Firm, FirmOption
 from rest_framework import status, viewsets
 import logging
+
+
+class FirmOptionsViewSet(viewsets.ModelViewSet):
+    queryset = FirmOption.objects.all()
+    serializer_class = FirmOptionSerializer
+    http_method_names = ['get', 'put']
 
 
 class FirmViewSet(viewsets.ModelViewSet):
@@ -37,6 +44,8 @@ class FirmViewSet(viewsets.ModelViewSet):
             firm_option = FirmOption.objects.get(id=pk)
             serializer = FirmOptionSerializer(firm_option)
             return Response(serializer.data)
+        except ObjectDoesNotExist:
+            return Response('Not found.', status=status.HTTP_404_NOT_FOUND)
         except Exception as exp:
             self.logger.exception(exp)
-            return Response('An error occurred during za process', status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response('An error occurred during process', status=status.HTTP_500_INTERNAL_SERVER_ERROR)
